@@ -5,7 +5,7 @@ source("code/matrix_functions.R")
 
 # Italy - 2012 -----------------------------------------------------------------
 
-tp_mf_ita_12 <- readRDS("data/tp_mf_ita_2012.rds") %>% 
+tp_mf_ita_12 <- readRDS("data/tp_mf_ita_2012.RDS") %>% 
   mutate(age1 = as.numeric(str_sub(from, start = 1, end = 2)),
          FROM = str_sub(from, start = 5, end = 14),
          age2 = as.numeric(age1+1),
@@ -40,7 +40,7 @@ tp_m_ita_12_60_tot <- tp_mf_ita_12 %>%
 # Matrix calc ------------------------------------------------------------------
 
 # Make the submatrices of U, the transient matrix 
-HH <- pi2u(pivec = tp_m_ita_12_60_tot$probs[tp_m_ita_12_60_tot$from == "H" & tp_m_ita_12_60_tot$to == "H"],from = "H", to = "H")
+HH <- pi2u(pivec = tp_m_ita_12_60_tot %>% filter(from == "H", to == "H") %>% pull(probs),from = "H", to = "H")
 HU <- pi2u(pivec = tp_m_ita_12_60_tot$probs[tp_m_ita_12_60_tot$from == "H" & tp_m_ita_12_60_tot$to == "U"],from = "H", to = "U")
 UH <- pi2u(pivec = tp_m_ita_12_60_tot$probs[tp_m_ita_12_60_tot$from == "U" & tp_m_ita_12_60_tot$to == "H"],from = "U", to = "H")
 UU <- pi2u(pivec = tp_m_ita_12_60_tot$probs[tp_m_ita_12_60_tot$from == "U" & tp_m_ita_12_60_tot$to == "U"],from = "U", to = "U")
