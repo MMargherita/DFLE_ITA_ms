@@ -27,9 +27,9 @@ boot_fx <-function(){
   #-------data and models ---------------------------------- 
   
   dati <-  as.data.frame(rbind(
-    sub2[sample(nrow(sub2), replace = T,prob=weight), ],
-    sub3[sample(nrow(sub3), replace = T,prob=weight), ],
-    sub4[sample(nrow(sub4), replace = T,prob=weight), ]))
+    sub2[sample(nrow(sub2), replace = T), ],
+    sub3[sample(nrow(sub3), replace = T), ],
+    sub4[sample(nrow(sub4), replace = T), ]))
   
   tr_format <- setDT(subset(dati,select = c("PB030","RX010","FROMD","TOD","PB150","PB010","DB040","HX100","weight","edu","area3","edu_mid","edu_high","edu_low","Centre","South","North")))
   names(tr_format) <- c("pid","age","from","to","gender","year","area","EQUI","weight","edu","area3","edu_mid","edu_high","edu_low","Centre","South","North")
