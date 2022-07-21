@@ -29,3 +29,11 @@ vignettes/*.pdf
 # RDS files
 *.RDS
 DFLE_ITA_ms.Rproj
+*.rda
+*.csv
+*.7z
+*.xlsx
+*.xls
+*.docx
+
+
