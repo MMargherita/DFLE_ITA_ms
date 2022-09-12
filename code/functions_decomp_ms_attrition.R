@@ -1,8 +1,10 @@
 
+source("code/functions_decomp_ms_shared.R")
 
+# load("data/data_out/new_Umats/Umats_lt_new_correct_ita_07.rda")
 
-Umat1 <- matrices$female
-Umat2 <- matrices$male
+# Umat1 <- matrices$female
+# Umat2 <- matrices$male
 
 # step 1:
 # convert the U matrix to a complete Ptibble: 

@@ -209,24 +209,24 @@ partialR_vec_to_ex <- function(vec_with_names,
     Expect_1(age = age, init = init, state = state)
 }
 
-load("data/data_out/new_Umats/Umats_lt_new_correct_ita_07.rda")
+# load("data/data_out/new_Umats/Umats_lt_new_correct_ita_07.rda")
 
 
-Umat1 <- matrices$female
-Umat2 <- matrices$male
-
-# # get pieces to treat as inputs
-
-R1 <- from_U_to_trans_matrix(Umat1) %>% 
-      as_tibble() %>% 
-      complete_partial_Ptibble() %>% 
-      Ptibble2Rtibble(start_age = 50,
-                      interval = 1)
-R2 <- from_U_to_trans_matrix(Umat2) %>% 
-  as_tibble() %>% 
-  complete_partial_Ptibble() %>% 
-  Ptibble2Rtibble(start_age = 50,
-                  interval = 1)
+# Umat1 <- matrices$female
+# Umat2 <- matrices$male
+# 
+# # # get pieces to treat as inputs
+# 
+# R1 <- from_U_to_trans_matrix(Umat1) %>% 
+#       as_tibble() %>% 
+#       complete_partial_Ptibble() %>% 
+#       Ptibble2Rtibble(start_age = 50,
+#                       interval = 1)
+# R2 <- from_U_to_trans_matrix(Umat2) %>% 
+#   as_tibble() %>% 
+#   complete_partial_Ptibble() %>% 
+#   Ptibble2Rtibble(start_age = 50,
+#                   interval = 1)
 # 
 
 
