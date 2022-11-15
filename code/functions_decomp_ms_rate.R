@@ -3,7 +3,7 @@
 
 
 # move away from the probability space
-source("code/functions_decomp_ms_shared.R")
+#source("code/functions_decomp_ms_shared.R")
 
 u2U_closed <- function(HH, HU, UH, UU){
   out <- rbind(
