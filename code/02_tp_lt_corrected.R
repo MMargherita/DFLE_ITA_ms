@@ -156,12 +156,31 @@ boot_fx <-function(){
   sr_probs.f[, Healthy:= Healthy/scaling_surv,]
   sr_probs.f[, Disabled:= Disabled/scaling_surv,]
   
+  #rescale if surv exceed 1
+  
+  sr_probs.f[, surv2:= (Healthy + Disabled), 
+             by = c("from","age")]
+  sr_probs.f[, scaling_surv2:= 1,]
+  sr_probs.f[surv2>1, scaling_surv2:= 1/surv2,]
+  sr_probs.f[, Healthy:= Healthy/scaling_surv2,]
+  sr_probs.f[, Disabled:= Disabled/scaling_surv2,]
+  
+  
   sr_probs.m[, surv:= (Healthy + Disabled), by = c("from","age")]
   sr_probs.m[,states_surv:= ifelse(from=="Healthy",surv*w_Healthy,surv*w_Disabled)]
   sr_probs.m[, from_surv:= sum(states_surv),by="age"]
   sr_probs.m[, scaling_surv:= from_surv/(1-(qx/1000)),]
   sr_probs.m[, Healthy:= Healthy/scaling_surv,]
   sr_probs.m[, Disabled:= Disabled/scaling_surv,]
+  
+  #rescale if surv exceed 1
+  
+  sr_probs.m[, surv2:= (Healthy + Disabled), 
+             by = c("from","age")]
+  sr_probs.m[, scaling_surv2:= 1,]
+  sr_probs.m[surv2>1, scaling_surv2:= 1/surv2,]
+  sr_probs.m[, Healthy:= Healthy/scaling_surv2,]
+  sr_probs.m[, Disabled:= Disabled/scaling_surv2,]
   
   #==============================================================================================
   transitions.m <- expand.grid(from=tstates,to=tstates)
