@@ -59,9 +59,20 @@ U2N <- function(U, interval = 1) {
   Nsx
 }
 
+init_constant <- function(U, age = 50, interval = 1){
+  from_names <- paste(c("H","U"),age,sep = "::")
+  to_names  <- paste(c("H","U"),age + interval,sep = "::")
+  u <- U[to_names,from_names]
+  v <- eigen(u)$vectors[,1]
+  v / sum(v)
+}
 
 # get the expectancy from the U matrix
-Expect <- function(U, age = 50, state = "H", init = c(H = .8,U = .2)){
+Expect <- function(U, age = 50, state = "H", init = NULL){
+ 
+  if (is.null(init)){
+    init <- init_constant(U, age = age)
+  }
   
   N <- U2N(U)
   
@@ -73,7 +84,15 @@ Expect <- function(U, age = 50, state = "H", init = c(H = .8,U = .2)){
   sum(t(N_block) * init) # -0.5
 }
 
-
+Ptibble2U <- function(Ptibble){
+  HH <- pi2u(pivec = Ptibble[["HH"]], from = "H", to = "H")
+  HU <- pi2u(pivec = Ptibble[["HU"]], from = "H", to = "U")
+  UH <- pi2u(pivec = Ptibble[["UH"]], from = "U", to = "H")
+  UU <- pi2u(pivec = Ptibble[["UU"]], from = "U", to = "U")
+  
+  U <- u2U(HH=HH,HU=HU,UH=UH,UU=UU)
+  U
+}
 # get the expectancy from the trans_matrix
 Expect_1 <- function(trans_matrix,age = 50, state = "H",init = c(H = .8,U = .2)){
   
@@ -118,7 +137,7 @@ vec_to_partial_Ptibble <- function(vec_with_names){
 }
 
 # and for jumping from a named vec to a given expectancy
-partial_vec_to_ex <- function(vec_with_names, age = 50, init = c(.8,.2), state = "H"){
+partial_vec_to_ex <- function(vec_with_names, age = 50, init = NULL, state = "H"){
   vec_with_names %>% 
     vec_to_partial_Ptibble() %>% 
     complete_partial_Ptibble() %>% 
