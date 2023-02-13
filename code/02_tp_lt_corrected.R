@@ -7,7 +7,7 @@ lapply(libraries,require, character=T)
 # life tables 2014. 
 #------------------------------------------------------------------------------
 
-yr <- "15"
+yr <- "19"
 
 dir_in <- file.path("dat_trformat/")
 
@@ -24,20 +24,20 @@ age_init <- seq(mineta-10,mineta+10,1)
 
 dat <- setDT(dat[!is.na(RX020)&!is.na(PB150),])      
 
-sub2 <- dat[IDmax==2,]
-sub3 <- dat[IDmax==3,]
-sub4 <- dat[IDmax==4,] 
-
-# dati <- dat
-
-boot_fx <-function(){
-
-  #-------data and models ----------------------------------
-
-  dati <-  as.data.frame(rbind(
-    sub2[sample(nrow(sub2), replace = T), ],
-    sub3[sample(nrow(sub3), replace = T), ],
-    sub4[sample(nrow(sub4), replace = T), ]))
+# sub2 <- dat[IDmax==2,]
+# sub3 <- dat[IDmax==3,]
+# sub4 <- dat[IDmax==4,] 
+# 
+ dati <- dat
+# 
+# boot_fx <-function(){
+# 
+#   #-------data and models ----------------------------------
+# 
+#   dati <-  as.data.frame(rbind(
+#     sub2[sample(nrow(sub2), replace = T), ],
+#     sub3[sample(nrow(sub3), replace = T), ],
+#     sub4[sample(nrow(sub4), replace = T), ]))
   
   tr_format <- setDT(subset(dati,select = c("PB030","RX010","FROM","TO","PB150","PB010","DB040","HX100","edu","area3","edu_mid","edu_high","edu_low","Centre","South","North")))
   names(tr_format) <- c("pid","age","from","to","gender","year","area","EQUI","edu","area3","edu_mid","edu_high","edu_low","Centre","South","North")
@@ -48,7 +48,7 @@ boot_fx <-function(){
   tr_format[,from:=factor(from2,levels = c(0,1,2),labels = c("Healthy","Disabled","Dead")),]
   tr_format[,to:=factor(to2,levels = c(0,1,2),labels = c("Healthy","Disabled","Dead")),]
   
-  tr_format <- droplevels(tr_format[complete.cases(to),,])
+  tr_format <- unique(droplevels(tr_format[complete.cases(to),,]))
   
   setkey(tr_format,"pid")
   tr_id <- tr_format[J(unique(pid)),mult="first"] 
@@ -156,12 +156,26 @@ boot_fx <-function(){
   sr_probs.f[, Healthy:= Healthy/scaling_surv,]
   sr_probs.f[, Disabled:= Disabled/scaling_surv,]
   
+  # scale again if the probs exceed 1
+  sr_probs.f[, surv2:= (Healthy + Disabled), by = c("from","age")]
+  sr_probs.f[, scaling_surv2:= 1,]
+  sr_probs.f[surv2>1, scaling_surv2:= 1/surv2,]
+  sr_probs.f[, Healthy:= Healthy/scaling_surv2,]
+  sr_probs.f[, Disabled:= Disabled/scaling_surv2,]
+  
   sr_probs.m[, surv:= (Healthy + Disabled), by = c("from","age")]
   sr_probs.m[,states_surv:= ifelse(from=="Healthy",surv*w_Healthy,surv*w_Disabled)]
   sr_probs.m[, from_surv:= sum(states_surv),by="age"]
   sr_probs.m[, scaling_surv:= from_surv/(1-(qx/1000)),]
   sr_probs.m[, Healthy:= Healthy/scaling_surv,]
   sr_probs.m[, Disabled:= Disabled/scaling_surv,]
+  
+  # scale again if the probs exceed 1
+  sr_probs.m[, surv2:= (Healthy + Disabled), by = c("from","age")]
+  sr_probs.m[, scaling_surv2:= 1,]
+  sr_probs.m[surv2>1, scaling_surv2:= 1/surv2,]
+  sr_probs.m[, Healthy:= Healthy/scaling_surv2,]
+  sr_probs.m[, Disabled:= Disabled/scaling_surv2,]
   
   #==============================================================================================
   transitions.m <- expand.grid(from=tstates,to=tstates)
@@ -221,53 +235,53 @@ boot_fx <-function(){
   risultati <-c(LE_M,HLE_M,DLE_M,LE_F,HLE_F,DLE_F)
   
   
-  return(risultati)
+#   return(risultati)
+# 
+# 
+# }
 
 
-}
 
-
-
-library(doParallel)
-library(foreach)
-#
-# # Parallelize =====================================================================================
-#
-mcoptions <- list(preschedule=FALSE, set.seed=FALSE)
-getDoParWorkers()
-cl <- parallel::makeCluster(30)
-doParallel::registerDoParallel(cl)
-
-time_start <- Sys.time()
-
-trials <- 1000
-expectancies <- foreach(i= icount(trials), .options.multicore=mcoptions, .combine='rbind',.packages=c('VGAM','Formula','data.table','tidyverse'),.errorhandling = 'remove',.verbose=T,.inorder=FALSE) %dopar% {
-  boot_fx()
-}
-
-stopCluster(cl)
-closeAllConnections()
-
-time_end <- Sys.time()
-
-gc()
-ls()
-dim(expectancies)
-
-ci <- function(theta) {quantile(theta,probs = c(.025,.975),type=8)}
-
-CICH <- round(apply(expectancies,2,ci),2)
-time_start
-time_end
-names(CICH) <- c("LE_M","HLE_M","DLE_M","LE_F","HLE_F","DLE_F")
+# library(doParallel)
+# library(foreach)
+# #
+# # # Parallelize =====================================================================================
+# #
+# mcoptions <- list(preschedule=FALSE, set.seed=FALSE)
+# getDoParWorkers()
+# cl <- parallel::makeCluster(30)
+# doParallel::registerDoParallel(cl)
+# 
+# time_start <- Sys.time()
+# 
+# trials <- 1000
+# expectancies <- foreach(i= icount(trials), .options.multicore=mcoptions, .combine='rbind',.packages=c('VGAM','Formula','data.table','tidyverse'),.errorhandling = 'remove',.verbose=T,.inorder=FALSE) %dopar% {
+#   boot_fx()
+# }
+# 
+# stopCluster(cl)
+# closeAllConnections()
+# 
+# time_end <- Sys.time()
+# 
+# gc()
+# ls()
+# dim(expectancies)
+# 
+# ci <- function(theta) {quantile(theta,probs = c(.025,.975),type=8)}
+# 
+# CICH <- round(apply(expectancies,2,ci),2)
+# time_start
+# time_end
+# names(CICH) <- c("LE_M","HLE_M","DLE_M","LE_F","HLE_F","DLE_F")
 # Save results ===============================================================================
 
+# write.csv(CICH,file=paste0(dir_out,"/boot_results_lt_02_2023_correct_ita_",yr,".csv"))
 
-write.csv(CICH,file=paste0(dir_out,"/boot_results_lt_correct_ita_",yr,".csv"))
+names(risultati) <- c("LE_M","HLE_M","DLE_M","LE_F","HLE_F","DLE_F")
+write.csv(risultati,file=paste0(dir_out,"/ results_lt_02_2023_correct_ita_",yr,".csv"))
 
-#write.csv(risultati,file=paste0(dir_out,"/ results_lt_new_correct_ita_",yr,".csv"))
-
-# matrices <- list(female = Umat_f,male = Umat_m) 
-# 
-# save(matrices,file=paste0(dir_out,"/Umats_lt_new_correct_ita_",yr,".rda"))
+ matrices <- list(female = Umat_f,male = Umat_m)
+#
+ save(matrices,file=paste0(dir_out,"/Umats_lt_02_2023_correct_ita_",yr,".rda"))
 
