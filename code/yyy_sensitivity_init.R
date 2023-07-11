@@ -1,4 +1,5 @@
 
+#
 rm(list=ls())
 libraries <- list("data.table","VGAM","tidyverse")
 lapply(libraries,require, character=T)
@@ -6,12 +7,12 @@ lapply(libraries,require, character=T)
 # Estimation of transition probabilities between health, disability and death states
 # using Silc data 2012-15, survival correction matching survival probs with italian 
 # life tables 2014. 
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------
 
 
 yrs <- 7:19
 
-myr <- sprintf("%02d", as.numeric(yrs))
+all_yrs <- sprintf("%02d", as.numeric(yrs))
 
 
 dir_in <- file.path("dat_trformat/")
@@ -21,7 +22,7 @@ dir_out <- file.path("./out/")
 men <- data.frame("H"=rep(NA,length(myr)),"D"=rep(NA,length(myr)),"year"=rep(NA,length(myr)))
 women <- men
 
-for (i in myr){
+for (i in all_yrs){
 
 tr_file <- paste0("/SILC_panel_",i,".rds")
 
@@ -72,4 +73,26 @@ out <- rbind(men,women)
 
 
 write.csv(out, file=paste0(dir_out,"/init_07_19.csv"))
+
+# Initial conditions used in decompositions are the stationary
+# ones based on the assumption that the transition probabilities
+# in age 50 were constant in ages below 50.
+
+# source("code/00_functions.R")
+# 
+# for (yr in all_yrs){
+#   
+#   
+#   # get age 50 transitions
+#   
+#   # calc init
+#   init_constant()
+#   
+# }
+
+
+
+
+
+
 

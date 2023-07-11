@@ -12,7 +12,6 @@ extract_pi <- function(U, from = "H", to = "H"){
   
 }
 
-
 # extract the non-null probabilities from U of each possible transition
 from_U_to_trans_matrix <- function(U){
   
@@ -27,8 +26,6 @@ from_U_to_trans_matrix <- function(U){
   
 }
 
-
-
 # from the transition probabilities vectors to the transition matrix 
 # between two states
 pi2u <- function(pivec, from ="H",to = "H",start_age = 50,interval = 1) {
@@ -41,14 +38,12 @@ pi2u <- function(pivec, from ="H",to = "H",start_age = 50,interval = 1) {
   out
 }
 
-
 # bind each transition matrix of the transition between two states
 u2U <- function(HH, HU, UH, UU){
   rbind(
     cbind(HH, UH),
     cbind(HU, UU))
 }
-
 
 # from the transition matrix U to the fundamental matrix N
 U2N <- function(U, interval = 1) {

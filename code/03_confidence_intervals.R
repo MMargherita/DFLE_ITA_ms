@@ -7,14 +7,14 @@ lapply(libraries,require, character=T)
 # life tables 2014. 
 #------------------------------------------------------------------------------
 
-anno <- sprintf("%02d",07:19)
+all_yrs <- sprintf("%02d",07:19)
 
 
 
 
-dir_in <- file.path("dat_trformat/")
+dir_in <- file.path("dat_trformat")
 
-dir_out <- file.path("./out/")
+dir_out <- file.path("data/data_out")
 
 
 mineta <- 50
@@ -22,7 +22,7 @@ maxeta <- 79
 
 age_init <- seq(mineta-10,mineta+10,1)
 
-for (yr in anno){
+for (yr in all_yrs){
   
   tr_file <- paste0("/SILC_panel_",yr,".rds")   
   
