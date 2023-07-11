@@ -2,23 +2,24 @@ rm(list=ls())
 libraries <- list("data.table")
 lapply(libraries,require, character=T)
 
+
 # Get the SILC data 2012-15 for Italy and prepare a dataset in transition format
 # with relevant variables for the estimation of health expectancy through multistate models
 yr <- "19"
 
-dir_in <- file.path("U:/nextcloud/Data/IT-SILC/raw_silc/")
+# dir_in <- file.path("U:/nextcloud/Data/IT-SILC/raw_silc/")
+dir_in  <- file.path("data/raw_silc/")
+dir_out <- file.path("data/dat_trformat/")
 
-dir_out <- file.path("./dat_trformat/")
+pfile <- paste0("/l", yr, "p.csv")
 
-pfile <- paste0("/l",yr,"p.csv")
-
-dat <- fread(paste0(dir_in,pfile))
+dat <- fread(paste0(dir_in, pfile))
 head(dat)
 
-dat[,.N,by=PB010]
-dat[,IDcount:=seq_len(.N),by=PB030]
-dat[,IDmax:=.N,by=PB030]
-dat[IDmax>1,.N,by=PB010]
+dat[, .N, by = PB010]
+dat[, IDcount := seq_len(.N), by = PB030]
+dat[, IDmax := .N, by = PB030]
+dat[IDmax > 1, .N, by = PB010]
 
 #----------------------------------------------------------------------------------------------------------------
 #PB010: Year
@@ -57,7 +58,9 @@ dat[IDmax>1,.N,by=PB010]
 ##................................................................................................................
 # select variables of interest
 
-datp <- subset(dat,select=c("PB010","PB030","PB150","PE040","PH010","PH020","PH030"))
+datp <-
+  subset(dat,
+         select = c("PB010", "PB030", "PB150", "PE040", "PH010", "PH020", "PH030"))
 
 #----------------------------------------------------------------------------------------------------------------
 # get individual data from register file
@@ -211,56 +214,25 @@ table(dat$PB010,dat$DB040)
 
 # up to 2006-2009
 
-if (as.numeric(yr)>9){
-
-dat[,area3:=NA_character_];dat[DB040%in%c("ITC","ITD"),area3 := "North"]
-dat[DB040%in%c("ITE"),area3 := "Centre"];dat[DB040%in%c("ITF","ITG"),area3 := "South"]
-
+if (as.numeric(yr)>9) {
+  dat[, area3 := NA_character_]
+  dat[DB040 %in% c("ITC", "ITD"), area3 := "North"]
+  dat[DB040 %in% c("ITE"), area3 := "Centre"]
+  dat[DB040 %in% c("ITF", "ITG"), area3 := "South"]
+  
 } else {
- dat[,area3:=NA_character_];dat[DB040%in%c("ITC","ITH"),area3 := "North"]
- dat[DB040%in%c("ITI"),area3 := "Centre"];dat[DB040%in%c("ITF","ITG"),area3 := "South"]
-
+  dat[, area3 := NA_character_]
+  dat[DB040 %in% c("ITC", "ITH"), area3 := "North"]
+  dat[DB040 %in% c("ITI"), area3 := "Centre"]
+  dat[DB040 %in% c("ITF", "ITG"), area3 := "South"]
+  
 }
-dat[,area3:=factor(area3,levels = c("North","Centre","South"))]
+# make region dummies
+dat[, area3 := factor(area3, levels = c("North", "Centre", "South"))]
+dat[, Centre := ifelse(area3 == "Centre", 1, 0)]
+dat[, South := ifelse(area3 == "South", 1, 0)]
+dat[, North := ifelse(area3 == "North", 1, 0)]
 
-dat[,Centre:=ifelse(area3=="Centre",1,0)] 
-dat[,South:=ifelse(area3=="South",1,0)]
-dat[,North:=ifelse(area3=="North",1,0)]
-
-# # prepare dummies for HH equiv income quintiles
-# 
-# dat[,INQ_I:= ifelse(HX100 == 1,1,0)]
-# dat[,INQ_II:= ifelse(HX100 == 2,1,0)]
-# dat[,INQ_III:= ifelse(HX100 == 3,1,0)]
-# dat[,INQ_IV:= ifelse(HX100 == 4,1,0)]
-# dat[,INQ_V:= ifelse(HX100 == 5,1,0)]
-# 
-# dat[,TER_I:=ifelse(HX100==1,1,0)]
-# dat[,TER_II:=ifelse(HX100==2,1,0)]
-# dat[,TER_III:=ifelse(HX100==3,1,0)]
-
-dat[, IDmax := .N, by = "PB030"]
-dat[, cens:= ifelse(RB110%in%5:7|is.na(RB110),1,0)]
-
-# prepare ipweights for attrition
-
-# dat <- na.omit(dat, cols=c("PB150","SRH"))
-
-# wave 2012-15 missing in age RX010
-
-dat <- na.omit(dat, cols=c("PB150","RX010","SRH","area3","edu"))
-dim(dat)
-
-cvs <- c("RX010", "PB150" , "SRH" , "edu_low" , "edu_high", "edu_mid", "area3")
-colSums(is.na(dat[,cvs,with=F]))
-
-ps_cens <- glm(cens ~  RX010 + PB150 + SRH + edu_low + edu_high + North + South, data = dat, family = binomial)
-denom <- predict(ps_cens,type="response")
-num <- glm(cens ~  1, data = dat, family = binomial)$fitted.values 
-
-summary(dat$cens)
-
-dat[ ,ipw:= ifelse(cens == 1, num/denom, (1-num)/(1-denom))] 
-
+# save out data formatted for model fitting (still individual)
 saveRDS(dat,file=paste0(dir_out,"/SILC_panel_",yr,".rds"))
 

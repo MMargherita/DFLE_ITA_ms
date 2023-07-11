@@ -14,9 +14,9 @@ for (i in myr){
                        skip = 1, 
                        header = TRUE, 
                        col.names = col_nm)
-  male    <- read.csv2(lt_male, 
-                       skip = 1, 
-                       header = TRUE, 
+  male    <- read.csv2(lt_male,
+                       skip = 1,
+                       header = TRUE,
                        col.names = col_nm)
   
   nc      <- seq_len(ncol(female) - 1)

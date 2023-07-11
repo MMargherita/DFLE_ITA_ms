@@ -1,8 +1,8 @@
 library(tidyverse)
 
 # load shared functions among the different decomp methods
-source("code/functions_decomp_ms_shared.R")
-
+source("code/
+00_functions.R")
 # load Umats for 07, 15, 16, 19
 load("data/Umats_lt_new_correct_ita_07.rda")
 Umat_f_07 <- matrices$female
