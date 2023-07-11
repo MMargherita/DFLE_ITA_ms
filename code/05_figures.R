@@ -44,7 +44,7 @@ for (yr in all_yrs){
   
 }
 
-
+# Figure 2
 # plot of DFLE and DLE trends
 expect_ci %>% 
   filter(ind %in% c("DFLE","DLE")) %>% 
@@ -83,12 +83,7 @@ expect_ci %>%
 
 
 
-
-
-
-
-
-
+# Figure 3
 # Plot of Decomposition --------------------------------------------------------
 period_left  <- c("07","11","16")
 period_right <- c("09","15","19")
