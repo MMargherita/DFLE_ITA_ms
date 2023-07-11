@@ -6,9 +6,9 @@ lapply(libraries, require, character = T)
 # Get the SILC data 2012-15 for Italy and prepare a dataset in transition format
 # with relevant variables for the estimation of health expectancy through multistate models
 
+# years to loop over
 all_yrs <- sprintf("%02d", 7:19)
 
-# dir_in <- file.path("U:/nextcloud/Data/IT-SILC/raw_silc/")
 dir_in  <- file.path("data/raw_silc")
 dir_out <- file.path("data/dat_trformat")
 
