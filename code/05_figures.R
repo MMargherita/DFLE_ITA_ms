@@ -15,6 +15,7 @@ for (s in c("m", "f")) {
   }
 }
 
+
 cc_p_attrition_mf_per <- bind_rows(decomp_list)
 
 cc_p_attrition_mf_per  %>%

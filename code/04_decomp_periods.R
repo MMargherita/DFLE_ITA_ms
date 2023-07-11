@@ -39,11 +39,11 @@ for (s in c("m", "f")) {
     sex <- ifelse(sex == "m", "male", "female")
     
     Umat_left_name  <- paste0("Umats_", period_left[p], ".rda")
-    Umat_left       <- local(get(load(Umat_left_name)))
+    Umat_left       <- local(get(load(file.path("data/data_out",Umat_left_name))))
     Umat_left       <- Umat_left[[sex]]
     
     Umat_right_name <- paste0("Umats_", period_right[p], ".rda")
-    Umat_right      <- local(get(load(Umat_right_name)))
+    Umat_right      <- local(get(load(file.path("data/data_out",Umat_right_name))))
     Umat_right      <- Umat_right[[sex]]
     
     P_left <- from_U_to_trans_matrix(Umat_left) |>
