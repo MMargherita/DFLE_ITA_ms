@@ -1,198 +1,85 @@
 library(tidyverse)
 
-# load shared functions among the different decomp methods
-source("code/
-00_functions.R")
+# load shared functions
+source("code/00_functions.R")
+
 # load Umats for 07, 15, 16, 19
-load("data/Umats_lt_new_correct_ita_07.rda")
+# first period decomp for 2007 - 2009
+load("data/Umats_07.rda")
 Umat_f_07 <- matrices$female
 Umat_m_07 <- matrices$male
-load("data/Umats_lt_new_correct_ita_15.rda")
+
+load("data/Umats_09.rda")
+Umat_f_09 <- matrices$female
+Umat_m_09 <- matrices$male
+
+# second period decomp for 2011 - 2015
+load("data/Umats_11.rda")
+Umat_f_11 <- matrices$female
+Umat_m_11 <- matrices$male
+
+load("data/Umats_15.rda")
 Umat_f_15 <- matrices$female
 Umat_m_15 <- matrices$male
-load("data/Umats_lt_new_correct_ita_16.rda")
+
+# third period decomp for 2016 - 2019
+load("data/Umats_16.rda")
 Umat_f_16 <- matrices$female
 Umat_m_16 <- matrices$male
-load("data/Umats_lt_new_correct_ita_19.rda")
+
+load("data/Umats_19.rda")
 Umat_f_19 <- matrices$female
 Umat_m_19 <- matrices$male
 
+period_left  <- c("07","11","16")
+period_right <- c("09","15","19")
 
-
-# ATTRITION ----
-
-# Female 07-15 -----
-P_f_07 <- from_U_to_trans_matrix(Umat_f_07) %>%
-  as_tibble() %>%
-  complete_partial_Ptibble() %>%
-  select(-HH, -UU)
-P_f_15 <- from_U_to_trans_matrix(Umat_f_15) %>%
-  as_tibble() %>%
-  complete_partial_Ptibble() %>%
-  select(-HH, -UU)
-
-cc_p_attrition_f_07_15 <-
-  horiuchi2(func = partial_vec_to_ex,
-            pars1 = P_f_07 %>%
-              partial_Ptibble_to_vec(),
-            pars2 = P_f_15 %>%
-              partial_Ptibble_to_vec(),
-            N = 20) %>%
-  vec_to_partial_Ptibble() %>%
-  rownames_to_column("age") %>%
-  pivot_longer(2:5, names_to = "from_to", values_to = "cc") %>%
-  mutate(variant = "prob attrition")
-
-
-save(cc_p_attrition_f_07_15,file="data/cc_p_attrition_f_07_15.RDa")
-
-# Female 16-19 -----
-P_f_16 <- from_U_to_trans_matrix(Umat_f_16) %>%
-  as_tibble() %>%
-  complete_partial_Ptibble() %>%
-  select(-HH, -UU)
-P_f_19 <- from_U_to_trans_matrix(Umat_f_19) %>%
-  as_tibble() %>%
-  complete_partial_Ptibble() %>%
-  select(-HH, -UU)
-
-cc_p_attrition_f_16_19 <-
-  horiuchi2(func = partial_vec_to_ex,
-            pars1 = P_f_16 %>%
-              partial_Ptibble_to_vec(),
-            pars2 = P_f_19 %>%
-              partial_Ptibble_to_vec(),
-            N = 20) %>%
-  vec_to_partial_Ptibble() %>%
-  rownames_to_column("age") %>%
-  pivot_longer(2:5, names_to = "from_to", values_to = "cc") %>%
-  mutate(variant = "prob attrition")
-
-
-save(cc_p_attrition_f_16_19,file="data/cc_p_attrition_f_16_19.RDa")
-
-
-# Female 07-19 -----
-P_f_07 <- from_U_to_trans_matrix(Umat_f_07) %>%
-  as_tibble() %>%
-  complete_partial_Ptibble() %>%
-  select(-HH, -UU)
-P_f_19 <- from_U_to_trans_matrix(Umat_f_19) %>%
-  as_tibble() %>%
-  complete_partial_Ptibble() %>%
-  select(-HH, -UU)
-
-cc_p_attrition_f_07_19 <-
-  horiuchi2(func = partial_vec_to_ex,
-            pars1 = P_f_07 %>%
-              partial_Ptibble_to_vec(),
-            pars2 = P_f_19 %>%
-              partial_Ptibble_to_vec(),
-            N = 20) %>%
-  vec_to_partial_Ptibble() %>%
-  rownames_to_column("age") %>%
-  pivot_longer(2:5, names_to = "from_to", values_to = "cc") %>%
-  mutate(variant = "prob attrition")
-
-
-save(cc_p_attrition_f_07_19,file="data/cc_p_attrition_f_07_19.RDa")
-
-
-
-# Male 07-15 -----
-P_m_07 <- from_U_to_trans_matrix(Umat_m_07) %>%
-  as_tibble() %>%
-  complete_partial_Ptibble() %>%
-  select(-HH, -UU)
-P_m_15 <- from_U_to_trans_matrix(Umat_m_15) %>%
-  as_tibble() %>%
-  complete_partial_Ptibble() %>%
-  select(-HH, -UU)
-
-cc_p_attrition_m_07_15 <-
-  horiuchi2(func = partial_vec_to_ex,
-            pars1 = P_m_07 %>%
-              partial_Ptibble_to_vec(),
-            pars2 = P_m_15 %>%
-              partial_Ptibble_to_vec(),
-            N = 20) %>%
-  vec_to_partial_Ptibble() %>%
-  rownames_to_column("age") %>%
-  pivot_longer(2:5, names_to = "from_to", values_to = "cc") %>%
-  mutate(variant = "prob attrition")
-
-
-save(cc_p_attrition_m_07_15,file="data/cc_p_attrition_m_07_15.RDa")
-
-# Male 16-19 -----
-P_m_16 <- from_U_to_trans_matrix(Umat_m_16) %>%
-  as_tibble() %>%
-  complete_partial_Ptibble() %>%
-  select(-HH, -UU)
-P_m_19 <- from_U_to_trans_matrix(Umat_m_19) %>%
-  as_tibble() %>%
-  complete_partial_Ptibble() %>%
-  select(-HH, -UU)
-
-cc_p_attrition_m_16_19 <-
-  horiuchi2(func = partial_vec_to_ex,
-            pars1 = P_m_16 %>%
-              partial_Ptibble_to_vec(),
-            pars2 = P_m_19 %>%
-              partial_Ptibble_to_vec(),
-            N = 20) %>%
-  vec_to_partial_Ptibble() %>%
-  rownames_to_column("age") %>%
-  pivot_longer(2:5, names_to = "from_to", values_to = "cc") %>%
-  mutate(variant = "prob attrition")
-
-
-save(cc_p_attrition_m_16_19,file="data/cc_p_attrition_m_16_19.RDa")
-
-
-# Male 07-19 -----
-P_m_07 <- from_U_to_trans_matrix(Umat_m_07) %>%
-  as_tibble() %>%
-  complete_partial_Ptibble() %>%
-  select(-HH, -UU)
-P_m_19 <- from_U_to_trans_matrix(Umat_m_19) %>%
-  as_tibble() %>%
-  complete_partial_Ptibble() %>%
-  select(-HH, -UU)
-
-cc_p_attrition_m_07_19 <-
-  horiuchi2(func = partial_vec_to_ex,
-            pars1 = P_m_07 %>%
-              partial_Ptibble_to_vec(),
-            pars2 = P_m_19 %>%
-              partial_Ptibble_to_vec(),
-            N = 20) %>%
-  vec_to_partial_Ptibble() %>%
-  rownames_to_column("age") %>%
-  pivot_longer(2:5, names_to = "from_to", values_to = "cc") %>%
-  mutate(variant = "prob attrition")
-
-
-save(cc_p_attrition_m_07_19,file="data/cc_p_attrition_m_07_19.RDa")
-
-
-
-
-# PLOT ATTR 07-15 ----
-# rm(list=ls())
-
-# load("code/cc_p_attrition_m_07_15.RDa")
-gap_m <- round(cc_p_attrition_m_07_15$cc %>% sum(),2) # -0.58 MEN
-# load("code/cc_p_attrition_f_07_15.RDa")
-gap_f <- round(cc_p_attrition_f_07_15$cc %>% sum(),2) # +0.59 WOMEN
-
-# merge men and women
-cc_p_attrition_m_07_15 <- cc_p_attrition_m_07_15 %>% 
-  mutate(sex="Men")
-cc_p_attrition_f_07_15 <- cc_p_attrition_f_07_15 %>% 
-  mutate(sex="Women")
-cc_p_attrition_mf_07_15 <- rbind(cc_p_attrition_m_07_15,
-                                 cc_p_attrition_f_07_15)
+for (s in c("m", "f")) {
+  for (p in 1:3) {
+    sex <- ifelse(sex == "m", "male", "female")
+    
+    Umat_left_name  <- paste0("Umats_", period_left[p], ".rda")
+    Umat_left       <- local(get(load(Umat_left_name)))
+    Umat_left       <- Umat_left[[sex]]
+    
+    Umat_right_name <- paste0("Umats_", period_right[p], ".rda")
+    Umat_right      <- local(get(load(Umat_right_name)))
+    Umat_right      <- Umat_right[[sex]]
+    
+    P_left <- from_U_to_trans_matrix(Umat_left) |>
+      as_tibble() |>
+      complete_partial_Ptibble() |>
+      select(-HH,-UU)
+    
+    P_right <- from_U_to_trans_matrix(Umat_right) |>
+      as_tibble() |>
+      complete_partial_Ptibble() |>
+      select(-HH,-UU)
+    
+    cc_p_attrition <-
+      horiuchi2(
+        func = partial_vec_to_ex,
+        pars1 = P_left %>%
+          partial_Ptibble_to_vec(),
+        pars2 = P_right %>%
+          partial_Ptibble_to_vec(),
+        N = 20
+      ) %>%
+      vec_to_partial_Ptibble() %>%
+      rownames_to_column("age") %>%
+      pivot_longer(2:5, names_to = "from_to", values_to = "cc") %>%
+      mutate(
+        variant = "prob attrition",
+        sex = sex,
+        period_left = period_left[p],
+        period_right = period_right[p]
+      )
+    file.name <-
+      paste0("cc_", period_left[p], "_", period_right[p], "_", sex, ".rda")
+    save(cc_p_attrition, file = file.path("data/data_out", file.name))
+    
+  }
+}
 
 cc_p_attrition_mf_07_15 %>%
   mutate(age = as.factor(as.integer(age) + 50),
