@@ -4,6 +4,10 @@ libraries <- list("data.table","VGAM","tidyverse")
 lapply(libraries,require, character=T)
 
 # Estimation of health distribution health, by age and sex
+# this is for 5-year age groups, not including covariates
+# not currently used.
+
+# this could be used to compare prev w share or another source
 #------------------------------------------------------------------------------
 
 
