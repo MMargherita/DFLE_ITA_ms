@@ -13,7 +13,7 @@ dir_in  <- file.path("data/raw_silc")
 dir_out <- file.path("data/dat_trformat")
 
 # Note, file names and file separators need to have been harmonized!
-# Original names from ISTAT are not harmonized. As described in the 
+# Original names from ISTAT are not harmonized. As described in the
 # README, you need to take the P, R, and D files.
 for (yr in all_yrs) {
   pfile <- paste0("l", yr, "p.csv")
@@ -131,33 +131,15 @@ for (yr in all_yrs) {
   dat[RB110 == 6, PH010D := 6,]
   
   datmort <-
-    subset(dat, select = c("RB030", "PB010D", "PH010D"), RB110 ==
-             6)
+    subset(dat,
+           select = c("RB030", "PB010D", "PH010D"),
+           RB110 == 6)
   setnames(datmort, c("RB030"), c("PB030"))
   #----------------------------------------------------------------------------------------------------------------
-  # get household data
+  #
+  dfile <- paste0("/l", yr, "d.csv")
   
-  hfile <- paste0("l", yr, "h.csv")
-  dat   <- fread(file.path(dir_in, hfile))
-  
-  
-  # HB010: TOTAL DISPOSABLE HOUSEHOLD INCOME
-  # HB030: Household Size
-  # HY020: TOTAL DISPOSABLE HOUSEHOLD INCOME
-  # HX040: Household Size
-  # HX050: Equivalised Household Size
-  # HX090: (HY020 X HY025)/ HX050 - TOTAL DISPOSABLE HOUSEHOLD INCOME X Equivalised HOUSEHOLD SIZE
-  # HX100: Equivalised disposable income quintile
-  #----------------------------------------------------------------------------------------------------------------
-  
-  # select variables of interest
-  dath <- subset(dat, select = c(HB010, HB030, HY020, HX090, HX100))
-  #----------------------------------------------------------------------------------------------------------------
-  # get household data from register file
-  
-  dfile <- paste0("l", yr, "d.csv")
-  
-  dat <- fread(file.path(dir_in, dfile))
+  dat <- fread(paste0(dir_in, dfile))
   # table(dat$DB010,dat$DB075)
   # table(dat$DB075,dat$idn)
   # dat[,idn:=.N,by=DB030]
@@ -177,20 +159,17 @@ for (yr in all_yrs) {
   # individual.....................................................................................................
   
   dat <- merge(datp,
-                datr,
-                by = c("PB030", "PB010"),
-                all.y = TRUE)
+               datr,
+               by = c("PB030", "PB010"),
+               all.y = T)
   
   
   # Household......................................................................................................
   
-  datf <- merge(dath, datd, by = c("HB030", "HB010"))
   
-  setnames(datf, c("HB010", "HB030"), c("PB010", "PB040"))
+  setnames(datd, c("HB010", "HB030"), c("PB010", "PB040"))
   
-  # Merge individual and HH data files.............................................................................
-  
-  dat <- merge(dati, datf, by = c("PB010", "PB040"))
+  dat <- merge(dat, datd, by = c("PB010", "PB040"))
   
   # Include mortality
   setkeyv(dat, c("PB030", "PB010"))
@@ -224,18 +203,18 @@ for (yr in all_yrs) {
   
   #rm(list=setdiff(ls(),"dat"))
   
-  setnames(dat, c("PH010", "PH020", "PH030"), c("SRH", "CRON", "ADL"))
+  setnames(dat, c("PH010", "PH020", "PH030"), c("SRH", "CRON", "GALI"))
   
-  # ADL TR_FORMAT
+  # GALI TR_FORMAT
   
-  dat[, FROM := sapply(ADL, function(x) {
+  dat[, FROM := sapply(GALI, function(x) {
     if (x %in% 1:2)
       1
     else if (x %in% 3)
       0
     else if (x %in% 6)
       2
-    else if (is.na(x) == T)
+    else if (is.na(x) == TRUE)
       NA
   }),]
   
