@@ -39,7 +39,6 @@ for (yr in all_yrs) {
         "PB150",
         "PB010",
         "DB040",
-        
         "edu",
         "area3",
         "edu_mid",
@@ -59,7 +58,6 @@ for (yr in all_yrs) {
       "gender",
       "year",
       "area",
-      
       "edu",
       "area3",
       "edu_mid",
