@@ -153,6 +153,7 @@ dati <- setDT(dat[!is.na(RX020)&!is.na(PB150),])
   sr_probs.f[, Healthy:= Healthy/scaling_surv,]
   sr_probs.f[, Disabled:= Disabled/scaling_surv,]
   
+<<<<<<< HEAD:code/zzz_02_tp_matrices_expectancies.R
   #rescale if surv exceed 1
   
   sr_probs.f[, surv2:= (Healthy + Disabled), 
@@ -164,6 +165,8 @@ dati <- setDT(dat[!is.na(RX020)&!is.na(PB150),])
   
   
   
+=======
+>>>>>>> parent of 82af348 (add scaling factor to get tp = 1):code/02_tp_lt_corrected.R
   sr_probs.m[, surv:= (Healthy + Disabled), by = c("from","age")]
   sr_probs.m[,states_surv:= ifelse(from=="Healthy",surv*w_Healthy,surv*w_Disabled)]
   sr_probs.m[, from_surv:= sum(states_surv),by="age"]
@@ -171,6 +174,7 @@ dati <- setDT(dat[!is.na(RX020)&!is.na(PB150),])
   sr_probs.m[, Healthy:= Healthy/scaling_surv,]
   sr_probs.m[, Disabled:= Disabled/scaling_surv,]
   
+<<<<<<< HEAD:code/zzz_02_tp_matrices_expectancies.R
   #rescale if surv exceed 1
   
   sr_probs.m[, surv2:= (Healthy + Disabled), 
@@ -181,6 +185,8 @@ dati <- setDT(dat[!is.na(RX020)&!is.na(PB150),])
   sr_probs.m[, Disabled:= Disabled/scaling_surv2,]
   
   
+=======
+>>>>>>> parent of 82af348 (add scaling factor to get tp = 1):code/02_tp_lt_corrected.R
   #==============================================================================================
   transitions.m <- expand.grid(from=tstates,to=tstates)
   
