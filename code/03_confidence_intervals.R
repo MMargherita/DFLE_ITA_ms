@@ -55,6 +55,81 @@ for (yr in all_yrs) {
   sub3 <- dat[IDmax == 3, ]
   sub4 <- dat[IDmax == 4, ]
   
+<<<<<<< HEAD
+  weights_m <- cbind(means.m,predict(fit.m_weights,means.m,"response"))[,c("age","Healthy","Disabled")]
+  weights_f <- cbind(means.f,predict(fit.f_weights,means.f,"response"))[,c("age","Healthy","Disabled")]
+  
+  names(weights_m) <- names(weights_f) <- c("age","w_Healthy","w_Disabled")
+  
+  # life tables
+  myr <- sprintf("%02d", as.numeric(yr)-1)
+  lt_female <- paste("./life_tables/Italia",myr,"Women.csv",sep="_")
+  
+  lt_male <- paste("./life_tables/Italia",myr,"Men.csv",sep="_")
+  col_nm <- c("x","age", "lx", "dx", "qx", "Lx", "px", "ex")
+  
+  female <- read.csv(lt_female, header=T, col.names = col_nm)
+  male <- read.csv(lt_male,header=T, col.names = col_nm)
+  
+  # merge survival probs from life tables to health distribution
+  
+  weights_f <- merge(weights_f,female[,c("age","qx")],by="age")
+  weights_m <- merge(weights_m,  male[,c("age","qx")],by="age")
+  
+  # merge the health distribution to trans probabilities
+  
+  sr_probs.f <- merge(probs.f_ita,weights_f,by="age")
+  sr_probs.m <- merge(probs.m_ita,weights_m,by="age")
+  
+  # first we get the survival probabilities by origin state 
+  
+  sr_probs.f[, surv:= (Healthy + Disabled), by = c("from","age")]
+  sr_probs.f[,states_surv:= ifelse(from=="Healthy",surv*w_Healthy,surv*w_Disabled)]
+  sr_probs.f[, from_surv:= sum(states_surv),by="age"]
+  sr_probs.f[, scaling_surv:= from_surv/(1-(qx/1000)),]
+  sr_probs.f[, Healthy:= Healthy/scaling_surv,]
+  sr_probs.f[, Disabled:= Disabled/scaling_surv,]
+  
+  #rescale if surv exceed 1
+  
+  sr_probs.f[, surv2:= (Healthy + Disabled), 
+             by = c("from","age")]
+  sr_probs.f[, scaling_surv2:= 1,]
+  sr_probs.f[surv2>1, scaling_surv2:= 1/surv2,]
+  sr_probs.f[, Healthy:= Healthy/scaling_surv2,]
+  sr_probs.f[, Disabled:= Disabled/scaling_surv2,]
+  
+  
+<<<<<<< HEAD:code/02_tp_lt_corrected.R
+=======
+  
+>>>>>>> ee30b68f3f30cf2683506c3b613cab4125ea22e1:code/03_confidence_intervals.R
+  sr_probs.m[, surv:= (Healthy + Disabled), by = c("from","age")]
+  sr_probs.m[,states_surv:= ifelse(from=="Healthy",surv*w_Healthy,surv*w_Disabled)]
+  sr_probs.m[, from_surv:= sum(states_surv),by="age"]
+  sr_probs.m[, scaling_surv:= from_surv/(1-(qx/1000)),]
+  sr_probs.m[, Healthy:= Healthy/scaling_surv,]
+  sr_probs.m[, Disabled:= Disabled/scaling_surv,]
+  
+  #rescale if surv exceed 1
+  
+  sr_probs.m[, surv2:= (Healthy + Disabled), 
+             by = c("from","age")]
+  sr_probs.m[, scaling_surv2:= 1,]
+  sr_probs.m[surv2>1, scaling_surv2:= 1/surv2,]
+  sr_probs.m[, Healthy:= Healthy/scaling_surv2,]
+  sr_probs.m[, Disabled:= Disabled/scaling_surv2,]
+  
+<<<<<<< HEAD:code/02_tp_lt_corrected.R
+=======
+  
+>>>>>>> ee30b68f3f30cf2683506c3b613cab4125ea22e1:code/03_confidence_intervals.R
+  #==============================================================================================
+  transitions.m <- expand.grid(from=tstates,to=tstates)
+  
+  
+  transitions <- function(dati_tmp){
+=======
   # dati <- dat
   # Function redefined in each loop iteration,
   # all data objects used in the function are
@@ -365,6 +440,7 @@ for (yr in all_yrs) {
     
     return(risultati)
     
+>>>>>>> 88e9f7d8a6a9b04106eda085179071fa64a92b0b
     
   }
   

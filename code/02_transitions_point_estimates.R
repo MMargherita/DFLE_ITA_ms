@@ -37,7 +37,6 @@ for (yr in all_yrs) {
         "PB150",
         "PB010",
         "DB040",
-        "HX100",
         "edu",
         "area3",
         "edu_mid",
@@ -57,7 +56,6 @@ for (yr in all_yrs) {
       "gender",
       "year",
       "area",
-      "EQUI",
       "edu",
       "area3",
       "edu_mid",
@@ -205,10 +203,14 @@ for (yr in all_yrs) {
   # life tables
   myr <- sprintf("%02d", as.numeric(yr) - 1)
   lt_female <-
-    file.path("data/life_tables", paste0("Italia", myr, "Women.csv"))
+    file.path("data/life_tables", paste0("Italia_", myr, "_Women.csv"))
+  
+  # Before using life tables a few edits are needed. Eliminate the first row from 
+  # the downloaded version from ISTAT; if not one has to add skip=1 in the 
+  # corresponding read.csv
   
   lt_male  <-
-    file.path("data/life_tables", paste0("Italia", myr, "Men.csv"))
+    file.path("data/life_tables", paste0("Italia_", myr, "_Men.csv"))
   col_nm <- c("x", "age", "lx", "dx", "qx", "Lx", "px", "ex")
   
   female <- read.csv(lt_female, header = T, col.names = col_nm)
