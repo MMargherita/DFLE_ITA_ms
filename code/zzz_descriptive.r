@@ -67,5 +67,5 @@ for (i in myr){
 out <- rbindlist(dtout)
 
 
-write.csv(out, file=paste0(dir_out,"/descriptive_results_07_19.rda"))
+save(out, file=paste0(dir_out,"/descriptive_results_07_19.rda"))
 
