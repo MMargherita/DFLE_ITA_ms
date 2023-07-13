@@ -12,9 +12,9 @@ yrs <- 7:19
 myr <- sprintf("%02d", as.numeric(yrs))
 
 
-dir_in <- file.path("dat_trformat/")
+dir_in <- file.path("data/dat_trformat/")
 
-dir_out <- file.path("./out/")
+dir_out <- file.path("data/data_out/")
 
 mineta <- 50
 maxeta <- 79
@@ -33,8 +33,8 @@ for (i in myr){
   
   dat <- setDT(dat[!is.na(RX020)&!is.na(PB150),])   
   
-  tr_format <- setDT(subset(dat,select = c("PB030","RX010","FROM","TO","PB150","PB010","DB040","HX100","edu","area3","edu_mid","edu_high","edu_low","Centre","South","North")))
-  names(tr_format) <- c("pid","age","from","to","gender","year","area","EQUI","edu","area3","edu_mid","edu_high","edu_low","Centre","South","North")
+  tr_format <- setDT(subset(dat,select = c("PB030","RX010","FROM","TO","PB150","PB010","DB040","edu","area3","edu_mid","edu_high","edu_low","Centre","South","North")))
+  names(tr_format) <- c("pid","age","from","to","gender","year","area","edu","area3","edu_mid","edu_high","edu_low","Centre","South","North")
   
   tr_format[,from2:=from,]
   tr_format[,to2:=to,]
@@ -67,5 +67,5 @@ for (i in myr){
 out <- rbindlist(dtout)
 
 
-write.csv(out, file=paste0(dir_out,"/descriptive_results_07_19.csv"))
+write.csv(out, file=paste0(dir_out,"/descriptive_results_07_19.rda"))
 
