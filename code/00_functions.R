@@ -1,3 +1,19 @@
+
+# handle installations as needed
+if (!"pacman" %in% installed.packages()[,"Package"]){
+  install.packages("pacman")
+  library(pacman)
+}
+
+libraries <- c("data.table","tidyverse","VGAM","doParallel","foreach")
+if(sum(!p_isinstalled(libraries))>0) {
+  p_install(
+    package = libraries[!p_isinstalled(libraries)], 
+    character.only = TRUE
+  )
+}
+
+
 # function to extract the non-null probabilities from U
 # (default: of transition to being "H" to being "H" (staying "H"))
 extract_pi <- function(U, from = "H", to = "H"){
