@@ -1,8 +1,4 @@
-rm(list = ls())
-libraries <- list("data.table")
-lapply(libraries, require, character = T)
-
-
+source("code/00_functions.R")
 # Get the SILC data 2012-15 for Italy and prepare a dataset in transition format
 # with relevant variables for the estimation of health expectancy through multistate models
 

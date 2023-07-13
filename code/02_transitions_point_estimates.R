@@ -1,6 +1,4 @@
-rm(list = ls())
-libraries <- list("data.table", "VGAM", "tidyverse")
-lapply(libraries, require, character = T)
+source("code/00_functions.R")
 
 # Estimation of transition probabilities between health, disability and death states
 # using Silc data 2012-15, survival correction matching survival probs with italian
