@@ -1,5 +1,4 @@
-
-
+source("code/00_functions.R")
 
 # Plot of expectancy trend estimates with confidence intervals -----------------
 all_yrs <- sprintf("%02d",07:19)
