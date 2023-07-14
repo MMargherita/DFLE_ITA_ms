@@ -1,3 +1,5 @@
+# handle installations as needed
+
 libraries <- list("data.table","tidyverse","VGAM","doParallel","foreach")
 
 if (!require("pacman")) install.packages("pacman")
