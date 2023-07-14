@@ -1,18 +1,7 @@
+libraries <- list("data.table","tidyverse","VGAM","doParallel","foreach")
 
-# handle installations as needed
-if (!"pacman" %in% installed.packages()[,"Package"]){
-  install.packages("pacman")
-  library(pacman)
-}
-
-libraries <- c("data.table","tidyverse","VGAM","doParallel","foreach")
-if(sum(!p_isinstalled(libraries))>0) {
-  p_install(
-    package = libraries[!p_isinstalled(libraries)], 
-    character.only = TRUE
-  )
-}
-
+if (!require("pacman")) install.packages("pacman")
+p_load(package = libraries,character.only = T)
 
 # function to extract the non-null probabilities from U
 # (default: of transition to being "H" to being "H" (staying "H"))
