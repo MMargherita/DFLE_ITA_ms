@@ -2,9 +2,9 @@
 # handle installations as needed
 if (!"pacman" %in% installed.packages()[,"Package"]){
   install.packages("pacman")
-  library(pacman)
-}
 
+}
+library(pacman)
 libraries <- c("data.table","tidyverse","VGAM","doParallel","foreach")
 if(sum(!p_isinstalled(libraries))>0) {
   p_install(
@@ -155,6 +155,19 @@ partial_vec_to_ex <- function(vec_with_names, age = 50, init = NULL, state = "H"
     Expect_1(age = age,
              init = init,
              state = state)
+}
+
+partial_vec_to_H <- function(vec_with_names, age = 50, init = NULL){
+  vec_with_names %>% 
+    vec_to_partial_Ptibble() %>% 
+    complete_partial_Ptibble() %>% 
+    HLE <- Expect_1(age = age,
+             init = init,
+             state = "H")
+    ULE <- Expect_1(age = age,
+                     init = init,
+                     state = "U")
+    HLE / (HLE + ULE)
 }
 # now we need function machinery for partial information settings:
 complete_partial_Ptibble <- function(partial_Ptibble){
