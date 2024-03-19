@@ -161,6 +161,7 @@ partial_vec_to_ex <- function(vec_with_names, age = 50, init = NULL, state = "H"
              state = state)
 }
 
+# new function to use when decomposing H
 partial_vec_to_H <- function(vec_with_names, age = 50, init = NULL){
   vec_with_names %>% 
     vec_to_partial_Ptibble() %>% 
