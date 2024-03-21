@@ -163,15 +163,17 @@ partial_vec_to_ex <- function(vec_with_names, age = 50, init = NULL, state = "H"
 
 # new function to use when decomposing H
 partial_vec_to_H <- function(vec_with_names, age = 50, init = NULL){
-  vec_with_names %>% 
+  trans_matrix <- vec_with_names %>% 
     vec_to_partial_Ptibble() %>% 
-    complete_partial_Ptibble() %>% 
-    HLE <- Expect_1(age = age,
-             init = init,
-             state = "H")
-    ULE <- Expect_1(age = age,
-                     init = init,
-                     state = "U")
+    complete_partial_Ptibble() 
+    HLE <- Expect_1(trans_matrix=trans_matrix,
+                    age = age,
+                    init = init,
+                    state = "H")
+    ULE <- Expect_1(trans_matrix,
+                    age = age,
+                    init = init,
+                    state = "U")
     HLE / (HLE + ULE)
 }
 # now we need function machinery for partial information settings:
