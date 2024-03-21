@@ -84,7 +84,7 @@ for (s in c("m", "f")) {
 # decompose again using H:
 for (s in c("m", "f")) {
   for (p in 1:3) {
-    sex <- ifelse(sex == "m", "male", "female")
+    sex <- ifelse(s == "m", "male", "female")
     
     Umat_left_name  <- paste0("Umats_", period_left[p], ".rda")
     Umat_left       <- local(get(load(file.path("data/data_out",Umat_left_name))))
