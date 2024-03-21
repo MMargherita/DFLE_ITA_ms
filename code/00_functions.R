@@ -6,7 +6,7 @@ if (!"pacman" %in% installed.packages()[,"Package"]){
 }
 library(pacman)
 
-libraries <- c("data.table","tidyverse","VGAM","doParallel","foreach")
+libraries <- c("data.table","tidyverse","VGAM","doParallel","foreach","collapse","tidyfast","tidytable")
 if(sum(!p_isinstalled(libraries))>0) {
   p_install(
     package = libraries[!p_isinstalled(libraries)], 
@@ -24,7 +24,7 @@ extract_pi <- function(U, from = "H", to = "H"){
   
   # identify the part of the matrix of the from and to of interest
   from_cols   <- grepl(colnames(U), pattern = from)
-  to_cols     <-  grepl(rownames(U), pattern = to) 
+  to_cols     <- grepl(rownames(U), pattern = to) 
   U_block     <- U[to_cols, from_cols]
   # take the subdiagonal of the matrix 
   # without the last col (last transition it is always to the abs. one )
@@ -124,14 +124,17 @@ Expect_1 <- function(trans_matrix,age = 50, state = "H",init = c(H = .8,U = .2))
 # some standards for jumping between named vec and standard Ptibble
 # just because it makes life easier
 partial_Ptibble_to_vec <- function(partial_Ptibble){
+  partial_Ptibble <-
+    partial_Ptibble |> 
+    ftransformv(vars = is.numeric,FUN = as.double, apply = TRUE)
   # trick for reshaping is to name things
   n <- nrow(partial_Ptibble)
   
   outl <-
-    partial_Ptibble %>% 
-    mutate(age = 0:(n-1)) %>% 
-    pivot_longer(-age, names_to = "from_to", values_to = "p") %>% 
-    mutate(from_to = paste(age, from_to))  %>% 
+    partial_Ptibble |> 
+    fmutate(age = 0:(n-1)) |> 
+    dt_pivot_longer(-age, names_to = "from_to", values_to = "p") |> 
+    fmutate(from_to = paste(age, from_to)) |> 
     as.list()
   
   out <- outl[["p"]]
@@ -142,20 +145,19 @@ partial_Ptibble_to_vec <- function(partial_Ptibble){
 # this is premised on having a named vector of the form
 # "0 HH" where we have {age, space, fromto}
 vec_to_partial_Ptibble <- function(vec_with_names){
-  vec_with_names %>% 
-    as.data.frame() %>% 
-    rownames_to_column("from_to") %>% 
-    separate(from_to, into = c("age", "from_to"), sep = " ") %>% 
-    pivot_wider(names_from = from_to, values_from = ".") %>% 
+  vec_with_names |>
+    as.data.frame() |>
+    rownames_to_column("from_to") |>
+    tidytable::separate(from_to, into = c("age", "from_to"), sep = " ",convert=TRUE) |>
+    dt_pivot_wider(names_from = from_to, values_from = vec_with_names) |> 
     column_to_rownames(var = "age") 
-  
 }
 
 # and for jumping from a named vec to a given expectancy
 partial_vec_to_ex <- function(vec_with_names, age = 50, init = NULL, state = "H"){
-  vec_with_names %>% 
-    vec_to_partial_Ptibble() %>% 
-    complete_partial_Ptibble() %>% 
+  vec_with_names |>
+    vec_to_partial_Ptibble() |>
+    complete_partial_Ptibble() |>
     Expect_1(age = age,
              init = init,
              state = state)
@@ -163,8 +165,8 @@ partial_vec_to_ex <- function(vec_with_names, age = 50, init = NULL, state = "H"
 
 # new function to use when decomposing H
 partial_vec_to_H <- function(vec_with_names, age = 50, init = NULL){
-  trans_matrix <- vec_with_names %>% 
-    vec_to_partial_Ptibble() %>% 
+  trans_matrix <- vec_with_names |>
+    vec_to_partial_Ptibble() |>
     complete_partial_Ptibble() 
     HLE <- Expect_1(trans_matrix=trans_matrix,
                     age = age,
@@ -178,7 +180,8 @@ partial_vec_to_H <- function(vec_with_names, age = 50, init = NULL){
 }
 # now we need function machinery for partial information settings:
 complete_partial_Ptibble <- function(partial_Ptibble){
-  partial_Ptibble <- as.data.frame(partial_Ptibble)
+  partial_Ptibble <- as.data.frame(partial_Ptibble) |> 
+    ftransformv(is.numeric, apply = TRUE, FUN = as.double)
   
   all_from_to <- c("HH","HU","HD","UH","UU","UD")
   Missing <- setdiff(all_from_to, names(partial_Ptibble))
@@ -191,16 +194,16 @@ complete_partial_Ptibble <- function(partial_Ptibble){
   n <- nrow(partial_Ptibble)
   rownames(partial_Ptibble) <- 0:(n-1)
   
-  partial_Ptibble %>% 
-    as_tibble(rownames = NA) %>% 
-    rownames_to_column("age") %>% 
-    pivot_longer(-age,names_to = "from_to", values_to = "p") %>% 
-    mutate(from = substr(from_to, 1, 1)) %>% 
-    group_by(from, age) %>% 
-    mutate(p = if_else(is.na(p), 1 - sum(p, na.rm = TRUE), p)) %>% 
-    ungroup() %>% 
-    select(-from) %>% 
-    pivot_wider(names_from = from_to, values_from = p) %>% 
+  partial_Ptibble |>
+    as_tibble(rownames = NA) |>
+    rownames_to_column("age") |>
+    dt_pivot_longer(-age,names_to = "from_to", values_to = "p") |>
+    fmutate(from = substr(from_to, 1, 1)) |>
+    fgroup_by(from, age) |> 
+    fmutate(p = if_else(is.na(p), 1 - sum(p, na.rm = TRUE), p)) |>
+    fungroup() |> 
+    fselect(-from) |> 
+    dt_pivot_wider(names_from = from_to, values_from = p) |>
     column_to_rownames(var="age")
 }
 

@@ -105,18 +105,18 @@ for (s in c("m", "f")) {
       select(-HH,-UU)
     
     cc_p_attrition <-
-      horiuchi2(
+      suppressWarnings(horiuchi2(
         func = partial_vec_to_H,
         pars1 = P_left %>%
           partial_Ptibble_to_vec(),
         pars2 = P_right %>%
           partial_Ptibble_to_vec(),
         N = 20
-      ) %>%
+      )) %>%
       vec_to_partial_Ptibble() %>%
       rownames_to_column("age") %>%
-      pivot_longer(2:5, names_to = "from_to", values_to = "cc") %>%
-      mutate(
+      dt_pivot_longer(2:5, names_to = "from_to", values_to = "cc") %>%
+      fmutate(
         variant = "prob attrition",
         sex = sex,
         period_left = period_left[p],
@@ -128,3 +128,4 @@ for (s in c("m", "f")) {
     
   }
 }
+
