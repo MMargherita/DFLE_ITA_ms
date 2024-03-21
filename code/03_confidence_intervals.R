@@ -55,7 +55,6 @@ for (yr in all_yrs) {
   sub3 <- dat[IDmax == 3, ]
   sub4 <- dat[IDmax == 4, ]
   
-<<<<<<< HEAD
   weights_m <- cbind(means.m,predict(fit.m_weights,means.m,"response"))[,c("age","Healthy","Disabled")]
   weights_f <- cbind(means.f,predict(fit.f_weights,means.f,"response"))[,c("age","Healthy","Disabled")]
   
@@ -99,11 +98,7 @@ for (yr in all_yrs) {
   sr_probs.f[, Healthy:= Healthy/scaling_surv2,]
   sr_probs.f[, Disabled:= Disabled/scaling_surv2,]
   
-  
-<<<<<<< HEAD:code/02_tp_lt_corrected.R
-=======
-  
->>>>>>> ee30b68f3f30cf2683506c3b613cab4125ea22e1:code/03_confidence_intervals.R
+
   sr_probs.m[, surv:= (Healthy + Disabled), by = c("from","age")]
   sr_probs.m[,states_surv:= ifelse(from=="Healthy",surv*w_Healthy,surv*w_Disabled)]
   sr_probs.m[, from_surv:= sum(states_surv),by="age"]
@@ -120,16 +115,10 @@ for (yr in all_yrs) {
   sr_probs.m[, Healthy:= Healthy/scaling_surv2,]
   sr_probs.m[, Disabled:= Disabled/scaling_surv2,]
   
-<<<<<<< HEAD:code/02_tp_lt_corrected.R
-=======
-  
->>>>>>> ee30b68f3f30cf2683506c3b613cab4125ea22e1:code/03_confidence_intervals.R
-  #==============================================================================================
   transitions.m <- expand.grid(from=tstates,to=tstates)
   
-  
   transitions <- function(dati_tmp){
-=======
+
   # dati <- dat
   # Function redefined in each loop iteration,
   # all data objects used in the function are
@@ -349,8 +338,6 @@ for (yr in all_yrs) {
     sr_probs.f[, Healthy := Healthy / scaling_surv2, ]
     sr_probs.f[, Disabled := Disabled / scaling_surv2, ]
     
-    
-    
     sr_probs.m[, surv := (Healthy + Disabled), by = c("from", "age")]
     sr_probs.m[, states_surv := ifelse(from == "Healthy", surv * w_Healthy, surv *
                                          w_Disabled)]
@@ -439,8 +426,7 @@ for (yr in all_yrs) {
     
     
     return(risultati)
-    
->>>>>>> 88e9f7d8a6a9b04106eda085179071fa64a92b0b
+
     
   }
   
