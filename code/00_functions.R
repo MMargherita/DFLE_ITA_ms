@@ -28,7 +28,7 @@ extract_pi <- function(U, from = "H", to = "H"){
   U_block     <- U[to_cols, from_cols]
   # take the subdiagonal of the matrix 
   # without the last col (last transition it is always to the abs. one )
-  diag(U_block[-1,-ncol(U)])
+  diag(as.matrix(U_block[-1,-ncol(U)]))
   
 }
 
