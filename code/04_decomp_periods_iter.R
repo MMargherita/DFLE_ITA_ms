@@ -73,4 +73,4 @@ for (s in c("men", "women")) {
 }
 
 cc_out <- bind_rows(iter_list)
-write_csv(cc_out, file = "cc_iter.csv")
+write_csv(cc_out, file = "data/data_out/cc_iter.csv")
