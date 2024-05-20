@@ -10,12 +10,13 @@ libraries <- c("data.table","tidyverse","VGAM","doParallel","foreach","collapse"
 if(sum(!p_isinstalled(libraries))>0) {
   p_install(
     package = libraries[!p_isinstalled(libraries)], 
-    character.only = TRUE
+    character.only = TRUE,
+    force = TRUE
   )
 }
 
 
-if (!require("pacman")) install.packages("pacman")
+
 p_load(package = libraries,character.only = T)
 
 # function to extract the non-null probabilities from U
@@ -121,6 +122,7 @@ Expect_1 <- function(trans_matrix,age = 50, state = "H",init = c(H = .8,U = .2))
   
 }
 
+
 # some standards for jumping between named vec and standard Ptibble
 # just because it makes life easier
 partial_Ptibble_to_vec <- function(partial_Ptibble){
@@ -149,7 +151,7 @@ vec_to_partial_Ptibble <- function(vec_with_names){
     as.data.frame() |>
     rownames_to_column("from_to") |>
     tidytable::separate(from_to, into = c("age", "from_to"), sep = " ",convert=TRUE) |>
-    dt_pivot_wider(names_from = from_to, values_from = vec_with_names) |> 
+    pivot_wider(names_from = from_to, values_from = vec_with_names) |> 
     column_to_rownames(var = "age") 
 }
 
@@ -203,7 +205,7 @@ complete_partial_Ptibble <- function(partial_Ptibble){
     fmutate(p = if_else(is.na(p), 1 - sum(p, na.rm = TRUE), p)) |>
     fungroup() |> 
     fselect(-from) |> 
-    dt_pivot_wider(names_from = from_to, values_from = p) |>
+    pivot_wider(names_from = from_to, values_from = p) |>
     column_to_rownames(var="age")
 }
 
