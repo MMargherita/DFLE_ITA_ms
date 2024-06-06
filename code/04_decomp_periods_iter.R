@@ -49,13 +49,14 @@ for (s in c("men", "women")) {
           partial_Ptibble_to_vec(),
         pars2 = P_right %>%
           partial_Ptibble_to_vec(),
-        N = 20,
+        N = 10,
         state="H"
       ) %>%
       vec_to_partial_Ptibble() %>%
       rownames_to_column("age") %>%
       pivot_longer(2:5, names_to = "from_to", values_to = "cc") %>%
       mutate(
+        age = as.integer(age),
         variant = "prob attrition",
         iter = iter,
         s = s,
@@ -74,3 +75,25 @@ for (s in c("men", "women")) {
 
 cc_out <- bind_rows(iter_list)
 write_csv(cc_out, file = "data/data_out/cc_iter.csv")
+
+cc_out <- read_csv( "data/data_out/cc_iter.csv")
+
+cc_out %>% 
+  filter(s == "men",period_left =="07") %>% 
+  group_by(age, from_to, period_left, s) %>% 
+  summarize(cc_low = quantile(cc, .025),
+            cc_mid = quantile(cc,.5),
+            cc_high = quantile(cc,.975),
+            cc_mean = mean(cc),
+            .groups = "drop") %>% 
+  ggplot(aes(x = age, y = cc_mid, color = from_to)) +
+  geom_line() +
+  facet_wrap(~from_to ) +
+  geom_ribbon(aes(ymin=cc_low, ymax=cc_high))
+
+
+
+
+  
+
+  

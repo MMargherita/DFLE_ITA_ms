@@ -191,7 +191,7 @@ complete_partial_Ptibble <- function(partial_Ptibble){
   if (length(Missing) == 0){
     return(partial_Ptibble)
   }
-  partial_Ptibble[Missing] <- NA
+  partial_Ptibble[Missing] <- NA_real_
   
   n <- nrow(partial_Ptibble)
   rownames(partial_Ptibble) <- 0:(n-1)
@@ -199,6 +199,7 @@ complete_partial_Ptibble <- function(partial_Ptibble){
   partial_Ptibble |>
     as_tibble(rownames = NA) |>
     rownames_to_column("age") |>
+    mutate(age = as.integer(age)) |>
     dt_pivot_longer(-age,names_to = "from_to", values_to = "p") |>
     fmutate(from = substr(from_to, 1, 1)) |>
     fgroup_by(from, age) |> 
