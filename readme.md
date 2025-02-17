@@ -34,7 +34,7 @@ Only the following dataset variables are used
 The folder “code” contains the R files to replicate the analysis and, specifically:
 
 
-“00_functions.R” "A" contains several functions used in subsequent scripts
+“00_functions.R” contains several functions used in subsequent scripts
 
 "01_data_prep_SILC.R" contains steps for preparing SILC raw data to be used for analysis
 
