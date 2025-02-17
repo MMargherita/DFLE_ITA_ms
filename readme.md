@@ -44,9 +44,9 @@ The folder “code” contains the R files to replicate the analysis and, specif
 
 "03_confidence_intervals.R" shows the calculation of confidence intervals for expectancies
 
-"04_decomp_periods.R" contains the steps to break down the DFLE evolution over time
+"04_decomp_periods.R" contains the steps to break down the DFLE evolution over time; "04_decomp_periods_iter.R" contains the code to computer the confidence intervals of the decomposition results
 
-Finally, "05_figures.R" contains the scripts to replicate the figures in the paper
+Finally, "05_figures.R" and "06_tables.R" contains the scripts to replicate the figures and the tables of the paper
 
 
 
