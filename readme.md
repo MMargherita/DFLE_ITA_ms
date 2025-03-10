@@ -7,9 +7,11 @@
 
 <h3>Citation and link to the paper</h3>
 
+Moretti M., Riffe T., Lorenti A. (2025) Multistate analysis and decomposition of disability-free life expectancy trends in Italy 2004-2019 in mid to older ages, Population Studies, 10.1080/00324728.2025.2475435
 
 
-<h4>This repository hosts the code to replicate the analysis and to reproduce the Shinyapp.</h4>
+
+<h4>This repository hosts the code to replicate the analysis of the paper.</h4>
 
 <h3>SILC application and download instructions:</h3>
 The dataset of the Italian version of the European Union Statistics on Income and Living Conditions (IT-SILC) must be requested to the Istituto Nazionale di Statistica (Istat) (see: https://www.istat.it/it/archivio/216947 and https://www.istat.it/it/archivio/4204). To request the data, go on https://contact.istat.it/index.php?Lingua=Inglese. Register to become a user, then fill out a form: https://www.istat.it/en/analysis-and-products/microdata-files#file_ricerca , scroll down to 'standard files', choose the doc or pdf versions of the form. After filling it out, submit it in your registered profile. You'll end up getting access to a zip file.
